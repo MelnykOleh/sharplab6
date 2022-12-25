@@ -1,0 +1,54 @@
+﻿@page "/editutility/{id:int}"
+@using lab6.Data
+@using lab6.Services
+@inherits OwningComponentBase<UtilityServices>
+
+<h1>Edit utility</h1>
+
+<EditForm Model="_utility" OnValidSubmit="EditUtility">
+	<label for="service">Service</label>
+	<InputText @bind-Value="_utility.ServiceName" id="service" />
+	<br />
+	<label for="pricePerSquareMeter">Per Meter</label>
+	<InputText @bind-Value="_utility.PricePerSquareMeter" id="pricePerSquareMeter" />
+	<br />
+	<label for="pricePerPerson">Per Person</label>
+	<InputText @bind-Value="_utility.PricePerPerson" id="pricePerPerson" />
+	<br />
+
+	<button type="submit">Add new utility</button>
+	<button><a href="/utilities">Return to all utilities</a></button>
+
+</EditForm>
+
+@code {
+	[Inject] NavigationManager navigationManager { get; set; } = null!;
+	[Parameter] public int id { get; set; }
+	private Utility _utility = new Utility();
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if (id < 0)
+		{
+			navigationManager.NavigateTo("/utilities");
+		}
+
+		if (id != 0)
+		{
+			_utility = await Service.GetUtility(id);
+		}
+	}
+
+	private async Task EditUtility()
+	{
+		if (id == 0)
+		{
+			await Service.AddUtility(_utility);
+		}
+		else
+		{
+			await Service.EditUtility(_utility);
+		}
+		navigationManager.NavigateTo("/utilities");
+	}
+}

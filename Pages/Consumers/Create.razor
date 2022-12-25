@@ -1,0 +1,59 @@
+﻿@page "/addconsumer"
+@using lab6.Data
+@using lab6.Services
+@inherits OwningComponentBase<ConsumerServices>
+
+<h1>Add new consumer</h1>
+
+<EditForm Model="_consumer" OnValidSubmit="AddConsumer">
+	<label>Last Name</label>
+	<input value="@_consumer.LastName" readonly />
+	<br />
+	<label>Name</label>
+	<input value="@_consumer.Name" readonly />
+	<br />
+	<label>Middle Name</label>
+	<input value="@_consumer.MiddleName" readonly />
+	<br />
+	<label>Residents</label>
+	<input value="@_consumer.NumberOfResidents" readonly />
+	<br />
+	<label>Square</label>
+	<input value="@_consumer.Square" readonly />
+	<br />
+	<label for="address">Choose address</label>
+	<InputSelect @bind-Value="_consumer.AddressID" id="address">
+		<option value="%">Choose address</option>
+		@foreach (var address in addresses)
+		{
+			<option value="@address.ID">@address.Street</option>
+		}
+	</InputSelect>
+	<br />
+	<label>Account</label>
+	<input value="@_consumer.PersonAccount" readonly />
+	<br />
+
+	<button type="submit">Create new addresse</button>
+	<button><a href="/consumers">Return to all consumeres</a></button>
+
+</EditForm>
+
+@code {
+	[Inject] NavigationManager navigationManager{ get; set; } = null!;
+
+	private Consumer _consumer = new Consumer();
+	private List<Address>
+	addresses = new List<Address>();
+
+	protected override async Task OnInitializedAsync()
+	{
+	addresses = await Service.GetAddressesFromConsumers();
+	}
+
+	private async Task AddConsumer()
+	{
+	await Service.AddConsumer(_consumer);
+	navigationManager.NavigateTo("/consumers");
+	}
+}

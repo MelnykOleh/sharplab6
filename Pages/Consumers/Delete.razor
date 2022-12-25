@@ -1,0 +1,54 @@
+﻿@page "/deleteconsumer/{id:int}"
+@using lab6.Data
+@using lab6.Services
+@inherits OwningComponentBase<ConsumerServices>
+
+<h1>Delete consumer</h1>
+
+<EditForm Model="_consumer" OnSubmit="DeleteConsumer">
+	<label>Last Name id</label>
+	<input value="@_consumer.LastName" readonly />
+	<br />
+	<label>Name</label>
+	<input value="@_consumer.Name" readonly />
+	<br />
+	<label>Midd leName</label>
+	<input value="@_consumer.MiddleName" readonly />
+	<br />
+	<label>Residents</label>
+	<input value="@_consumer.NumberOfResidents" readonly />
+	<br />
+	<label>Square</label>
+	<input value="@_consumer.Square" readonly />
+	<br />
+	<label>Address</label>
+	<input value="@_consumer.Address" readonly />
+	<br />
+	<label>Account</label>
+	<input value="@_consumer.PersonAccount" readonly />
+	<br />
+	<button type="submit">Delete information about consumer</button>
+	<button><a href="/consumers">Return to all consumers</a></button>
+</EditForm>
+
+@code {
+	[Inject] NavigationManager navigationManager { get; set; } = null!;
+	[Parameter] public int id { get; set; }
+
+	private Consumer _consumer = new Consumer();
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if (id <= 0)
+		{
+			navigationManager.NavigateTo("/consumers");
+		}
+		_consumer = await Service.GetConsumer(id);
+	}
+
+	private async Task DeleteConsumer()
+	{
+		await Service.DeleteConsumer(_consumer);
+		navigationManager.NavigateTo("/consumers");
+	}
+}

@@ -1,0 +1,56 @@
+﻿@page "/editaddress/{id:int}"
+@using lab6.Data
+@using lab6.Services
+@inherits OwningComponentBase<AddressServices>
+
+<h1>Edit address</h1>
+<EditForm Model="_address" OnValidSubmit="EditAddress">
+
+	<label for="street">Street</label>
+	<InputText @bind-Value="_address.Street" id="street" />
+	<br />
+	<label for="house">House</label>
+	<InputText @bind-Value="_address.House" id="house" />
+	<br />
+	<label for="apartment">Apartment</label>
+	<InputText @bind-Value="_address.Apartment" id="apartment" />
+	<br />
+
+	<button type="submit">Save chnages</button>
+	<button><a href="/addresses">Return to all addresses</a></button>
+</EditForm>
+
+@code {
+	[Inject] NavigationManager navigationManager { get; set; } = null!;
+	private Address _address = new Address();
+	[Parameter] public int id { get; set; }
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if (id < 0)
+		{
+			navigationManager.NavigateTo("/addresses");
+		}
+
+		if (id != 0)
+		{
+			_address = await Service.GetAddress(id);
+		}
+	}
+
+	private async Task EditAddress()
+	{
+		if (id == 0)
+		{
+			await Service.AddAddress(_address);
+		}
+		else
+		{
+			await Service.EditAddress(_address);
+		}
+
+		navigationManager.NavigateTo("/addresses");
+	}
+
+
+}

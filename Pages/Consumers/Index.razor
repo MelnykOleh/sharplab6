@@ -1,0 +1,98 @@
+﻿@page "/consumers"
+@using lab6.Data
+@using lab6.Services
+@inherits OwningComponentBase<ConsumerServices>
+
+<h1>All consumers</h1>
+
+<a href="/addconsumer" class="btn btn-primary">Add new consumer</a>
+<table class="table table-bordered table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Last name
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Middle name
+            </th>
+            <th>
+                Residents
+            </th>
+            <th>
+                Square
+            </th>
+            <th>
+                Street
+            </th>
+            <th>
+                House
+            </th>
+            <th>
+                Apartment
+            </th>
+            <th>
+                Account
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var consumer in consumers)
+        {
+            <tr>
+                <td>
+                    @consumer.ID
+                </td>
+                <td>
+                    @consumer.LastName
+                </td>
+                <td>
+                    @consumer.Name
+                </td>
+                <td>
+                    @consumer.MiddleName
+                </td>
+                <td>
+                    @consumer.NumberOfResidents
+                </td>
+                <td>
+                    @consumer.Square
+                </td>
+                <td>
+                    @consumer.Address.Street
+                </td>
+                <td>
+                    @consumer.Address.House
+                </td>
+                <td>
+                    @consumer.Address.Apartment
+                </td>
+                <td>
+                    @consumer.PersonAccount
+                </td>
+                <td>
+                    <a href="/deleteconsumer/@consumer.ID" class="btn btn-danger">Delete consumer</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    List<Consumer>
+    consumers = new List<Consumer>
+        ();
+
+        protected override async Task OnInitializedAsync()
+        {
+        consumers = await Service.GetConsumers();
+        }
+      }

@@ -1,0 +1,78 @@
+﻿@page "/addreceipt"
+@using lab6.Data
+@using lab6.Services
+@inherits OwningComponentBase<ReceiptServices>
+
+
+<h1>Add new information about receipt</h1>
+
+<EditForm Model="_receipt" OnValidSubmit="Receipt">
+	<label id="consumer">Consumer</label>
+	<InputSelect @bind-Value="_receipt.ConsumerID" id="consumer">
+		<option value="%">Choose consumer</option>
+		@foreach (var consumer in _consumers)
+		{
+			<option value="@consumer.ID">@consumer.LastName</option>
+		}
+	</InputSelect>
+	<br />
+	<label for="utility">Utility</label>
+	<InputSelect @bind-Value="_receipt.UtilityID" id="utility">
+		<option value="%">Choose utility</option>
+		@foreach (var utility in _utilities)
+		{
+			<option value="@utility.ID">@utility.ServiceName</option>
+		}
+	</InputSelect>
+	<br />
+	<label>Payment</label>
+	<input value="@_receipt.TypeOfPayment" readonly />
+	<br />
+	<label>By Date</label>
+	<InputDate @bind-Value="_receipt.ByDate" />
+	<br />
+	<label>Date Of Payment</label>
+	<InputDate @bind-Value="_receipt.DateOfPayment" />
+	<br />
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<label>Amount</label>
+	<input value="@_receipt.Amount" readonly />
+	<br />
+	<label>Benefits</label>
+	<input value="@_receipt.Benefits" readonly />
+	<br />
+	<label>Subsidies</label>
+	<input value="@_receipt.Subsidies" readonly />
+	<br />
+	<label>Final Amount</label>
+	<input value="@_receipt.FinalAmount" readonly />
+	<br />
+	<button type="submit">Add new information about receipt</button>
+	<button><a href="/receipts">View all information about receipts</a></button>
+</EditForm>
+
+@code {
+	[Inject] NavigationManager navigationManager { get; set; } = null!;
+
+	private Receipt _receipt = new Receipt();
+	private List<Consumer>
+	_consumers = new List<Consumer>
+		();
+		private List<Utility>
+			_utilities = new List<Utility>
+				();
+
+				protected override async Task OnInitializedAsync()
+				{
+				_consumers = await Service.GetConsumersFromReceipts();
+				_utilities = await Service.GetUtilitiesFromReceipt();
+				}
+
+				private async Task Receipt()
+				{
+				await Service.AddReceipt(_receipt);
+				navigationManager.NavigateTo("/receipts");
+				}
+
+				}

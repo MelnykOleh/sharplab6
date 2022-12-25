@@ -1,0 +1,64 @@
+﻿@page "/deletereceipt/{id:int}"
+@using lab6.Data
+@using lab6.Services
+@inherits OwningComponentBase<ReceiptServices>
+
+<h1>Delete information about receipt</h1>
+<EditForm Model="_receipt" OnSubmit="DeleteReceipt">
+	<label>Last Name</label>
+	<input value="@_receipt.ConsumerID" readonly />
+	<br/>
+	<label>Service</label>
+	<input value="@_receipt.UtilityID" readonly />
+	<br/>
+	<label>Payment</label>
+	<input value="@_receipt.TypeOfPayment" readonly />
+	<br/>
+	<label>By Date</label>
+	<input value="@_receipt.ByDate" readonly />
+	<br/>
+	<label>Date Of Payment</label>
+	<input value="@_receipt.DateOfPayment" readonly />
+	<br/>
+	<label>Amount</label>
+	<input value="@_receipt.Amount" readonly />
+	<br/>
+	<label>Benefits</label>
+	<input value="@_receipt.Benefits" readonly />
+	<br/>
+	<label>Subsidies</label>
+	<input value="@_receipt.Subsidies" readonly />
+	<br/>
+	<label>Final Amount</label>
+	<input value="@_receipt.FinalAmount" readonly />
+	<br/>
+	<br/>
+	<button type="submit">Delete receipt</button>
+	<button><a href="/receipts">Return to all receipts</a></button>
+</EditForm>
+
+@code {
+	[Inject] NavigationManager navigationManager { get; set; } = null!;
+	[Parameter] public int id{ get; set; }
+
+	private Receipt _receipt = new Receipt();
+	private Consumer _consumer = new Consumer();
+	private Address _address = new Address();
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if(id <= 0)
+		{
+			navigationManager.NavigateTo("/receipts");
+		}
+		_receipt = await Service.GetReceipt(id);
+		
+	}
+
+	private async Task DeleteReceipt()
+	{
+		await Service.DeleteReceipt(_receipt);
+		navigationManager.NavigateTo("/receipts");
+	}
+}
+

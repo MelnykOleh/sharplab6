@@ -1,0 +1,97 @@
+﻿@page "/receipts"
+@using lab6.Data
+@using lab6.Services
+@inherits OwningComponentBase<ReceiptServices>
+
+<h1>Information about all receipts</h1>
+
+<a href="/receipt" class="btn btn-primary">Add new information about receipt</a>
+<table class="table table-bordered table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                Surname consumer
+            </th>
+            <th>
+                Name consumer
+            </th>
+            <th>
+                Service
+            </th>
+            <th>
+                Payment
+            </th>
+            <th>
+                By date
+            </th>
+            <th>
+                Date of payment
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+                Benefits
+            </th>
+            <th>
+                Subsidies
+            </th>
+            <th>
+                FinalAmount
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var receipt in receipts)
+        {
+            <tr>
+                <td>
+                    @receipt.Consumer.LastName
+                </td>
+                <td>
+                    @receipt.Consumer.Name
+                </td>
+                <td>
+                    @receipt.Utility.ServiceName
+                </td>
+                <td>
+                    @receipt.TypeOfPayment
+                </td>
+                <td>
+                    @receipt.ByDate
+                </td>
+                <td>
+                    @receipt.DateOfPayment
+                </td>
+                <td>
+                    @receipt.Amount
+                </td>
+                <td>
+                    @receipt.Benefits
+                </td>
+                <td>
+                    @receipt.Subsidies
+                </td>
+                <td>
+                    @receipt.FinalAmount
+                </td>
+                <td>
+                    <a href="/deletereceipt/@receipt.ID" class="btn btn-danger">Delete information about receipt</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@code {
+    List<Receipt>
+    receipts = new List<Receipt>
+        ();
+
+        protected override async Task OnInitializedAsync()
+        {
+        receipts = await Service.GetReceipts();
+        }
+        }

@@ -1,0 +1,65 @@
+﻿@page "/utilities"
+@using lab6.Data
+@using lab6.Services
+@inherits OwningComponentBase<UtilityServices>
+
+<h1>All utilities</h1>
+<a href="/editutility/0" class="btn btn-primary">Add new utility</a>
+<table class="table table-bordered table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Service
+            </th>
+            <th>
+                Per meter
+            </th>
+            <th>
+                Per person
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var utility in utilities)
+        {
+            <tr>
+                <td>
+                    @utility.ID
+                </td>
+                <td>
+                    @utility.ServiceName
+                </td>
+                <td>
+                    @utility.PricePerSquareMeter
+                </td>
+                <td>
+                    @utility.PricePerPerson
+                </td>
+                <td>
+                    <a href="/editutility/@utility.ID" class="btn btn-warning">Edit utility</a>
+                </td>
+                <td>
+                    <a href="/deleteutility/@utility.ID" asp-route-id="@utility.ID" class="btn btn-danger">Delete utility</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    List<Utility>
+    utilities = new List<Utility>
+        ();
+
+        protected override async Task OnInitializedAsync()
+        {
+        utilities = await Service.GetUtilities();
+        }
+        }

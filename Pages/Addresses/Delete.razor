@@ -1,0 +1,43 @@
+﻿@page "/deleteaddress/{id:int}"
+@using lab6.Data
+@using lab6.Services
+@inherits OwningComponentBase<AddressServices>
+
+<h1>Delete address</h1>
+<EditForm Model="_address" OnSubmit="DeleteAddress">
+
+	<label>Street</label>
+	<input value="@_address.Street" readonly />
+	<br />
+	<label>House</label>
+	<input value="@_address.House" readonly />
+	<br />
+	<label>Apartment</label>
+	<input value="@_address.Apartment" readonly />
+	<br />
+
+	<button type="submit">Delete address</button>
+	<button><a href="/addresses">Return to all addresses</a></button>
+</EditForm>
+
+@code {
+	[Inject] NavigationManager navigationManager{ get; set; } = null!;
+	private Address _address = new Address();
+	[Parameter] public int id { get; set; }
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if (id <= 0)
+		{
+			navigationManager.NavigateTo("/addresses");
+		}
+		_address = await Service.GetAddress(id);
+	}
+
+	private async Task DeleteAddress()
+	{
+		await Service.DeleteAddress(_address);
+		navigationManager.NavigateTo("/addresses");
+	}
+
+}

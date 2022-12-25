@@ -1,0 +1,65 @@
+﻿@page "/addresses"
+@using lab6.Data
+@using lab6.Services
+@inherits OwningComponentBase<AddressServices>
+
+<h1>All addresses</h1>
+<a href="/editaddress/0" class="btn btn-primary">Add new address</a>
+<table class="table table-bordered table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Street
+            </th>
+            <th>
+                House
+            </th>
+            <th>
+                Apartment
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var address in addresses)
+        {
+            <tr>
+                <td>
+                    @address.ID
+                </td>
+                <td>
+                    @address.Street
+                </td>
+                <td>
+                    @address.House
+                </td>
+                <td>
+                    @address.Apartment
+                </td>
+                <td>
+                    <a href="/editaddress/@address.ID" class="btn btn-warning">Edit address</a>
+                </td>
+                <td>
+                    <a href="/deleteaddress/@address.ID" class="btn btn-danger">Delete address</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+	List<Address> addresses = new List<Address>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		addresses = await Service.GetAddresses();
+	}
+
+}

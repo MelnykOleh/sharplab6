@@ -1,0 +1,42 @@
+﻿@page "/deleteutility/{id:int}"
+@using lab6.Data
+@using lab6.Services
+@inherits OwningComponentBase<UtilityServices>
+
+<h1>Delete utility</h1>
+
+<EditForm Model="_utility" OnValidSubmit="DeleteUtility">
+	<label>Service</label>
+	<input value="@_utility.ServiceName" readonly />
+	<br />
+	<label>Per Meter</label>
+	<input value="@_utility.PricePerSquareMeter" readonly />
+	<br />
+	<label>Per Person</label>
+	<input value="@_utility.PricePerPerson" readonly />
+	<br />
+	<button type="submit">Delete utility</button>
+	<button><a href="/utilities">Return to all utilities</a></button>
+
+</EditForm>
+
+@code {
+	[Inject] NavigationManager navigationManager{ get; set; } = null!;
+	[Parameter] public int id { get; set; }
+	private Utility _utility = new Utility();
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if(id <= 0)
+		{
+			navigationManager.NavigateTo("/utilities");
+		}
+		_utility = await Service.GetUtility(id);
+	}
+
+	private async Task DeleteUtility()
+	{
+		await Service.DeleteUtility(_utility);
+		navigationManager.NavigateTo("/utilities");
+	}
+}
